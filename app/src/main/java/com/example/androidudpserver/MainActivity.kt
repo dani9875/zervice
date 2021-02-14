@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener 
             try {
                 tcpServer = TCPServerThread()
                 tcpServer!!.start()
-                Log.d("TAG", "starting thread")
+                Log.e("TAG", "starting thread")
                 Toast.makeText(applicationContext," Starting Server from Main", Toast.LENGTH_LONG).show()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -55,26 +55,36 @@ class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener 
     inner class TCPServerThread : Thread() {
         private var server: ServerSocket? = null
         private var w: ClientWorker? = null
+        private var count:Int = 0
+        private val message = "lol"
 
         init{
             listenSocket()
         }
 
         private fun listenSocket() {
-            try {
+            try
+            {
                 server = ServerSocket(tcpPORT)
                 server!!.reuseAddress = true
-            } catch (e: IOException) {
-                println("Could not listen on port 4444")
+            }
+            catch (e: IOException)
+            {
+                Log.e("TAG", "Cannot listen on the specified port!")
                 System.exit(-1)
             }
-            while (true) {
-                try {
+
+            while (true)
+            {
+                try
+                {
                     w = ClientWorker(server!!.accept())
-                    Log.d("TAG", "Client Accept done")
+                    Log.e("TAG", "Client Accept done")
                     val t = Thread(w)
                     t.start()
-                } catch (e: IOException) {
+                }
+                catch (e: IOException)
+                {
                     println("Accept failed: 52222")
                     System.exit(-1)
                 }
@@ -84,10 +94,11 @@ class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener 
         inner class ClientWorker /*Constructor*/(private val client: Socket) : Runnable {
             override fun run() {
                 var line: String
-                var `in`: BufferedReader? = null
+                var input: BufferedReader? = null
                 var out: PrintWriter? = null
                 try {
-                    `in` = BufferedReader(InputStreamReader(client.getInputStream()))
+                    input = BufferedReader(InputStreamReader(client.getInputStream()))
+                    Log.e(TAG, input.toString())
                     out = PrintWriter(client.getOutputStream(), true)
                 } catch (e: IOException) {
                     println("in or out failed")
@@ -96,7 +107,8 @@ class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener 
 
                 while (true) {
                     try {
-                        line = `in`!!.readLine()
+                        line = input!!.readLine()
+                        Log.e(TAG, line.toString())
                         out!!.println(line)
                     } catch (e: IOException) {
                         println("Read failed")
