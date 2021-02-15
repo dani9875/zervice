@@ -103,9 +103,13 @@ class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener 
                 try {
                     input = BufferedReader(InputStreamReader(client.getInputStream()))
                     Log.e(TAG, input.toString())
-                    val device = Device("device1", "random ip address")
-                    devicesAdapter.addItem(device)
+                    Thread {
+                        runOnUiThread {
+                            val device = Device("device1", "random ip address")
+                            devicesAdapter.addItem(device)}
+                    }.start()
                     out = PrintWriter(client.getOutputStream(), true)
+                    out.println("valasz")
                 } catch (e: IOException) {
                     println("in or out failed")
                     System.exit(-1)
