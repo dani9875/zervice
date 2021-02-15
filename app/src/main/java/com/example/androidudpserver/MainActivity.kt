@@ -16,12 +16,11 @@ import java.net.Socket
 class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener {
 
     var tcpServer: TCPServerThread? = null
+    private val devicesAdapter = DevicesAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Log.d("TAG", "starting act")
-        val devicesAdapter = DevicesAdapter(this)
         val recView = findViewById<RecyclerView>(R.id.rvDevices)
         recView.layoutManager = LinearLayoutManager(this)
         recView.adapter = devicesAdapter
@@ -30,7 +29,12 @@ class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener 
 
     override fun onStart() {
         super.onStart()
-
+        val device1 = Device("device1", "192.168.0.15")
+        val device2 = Device("device2", "192.168.0.16")
+        val device3 = Device("device3", "192.168.0.17")
+        devicesAdapter.addItem(device1)
+        devicesAdapter.addItem(device2)
+        devicesAdapter.addItem(device3)
         val thread = Thread(Runnable {
             try {
                 tcpServer = TCPServerThread()
@@ -85,7 +89,7 @@ class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener 
                 }
                 catch (e: IOException)
                 {
-                    println("Accept failed: 52222")
+                    println("Accept failed:"+ tcpPORT)
                     System.exit(-1)
                 }
             }
@@ -99,6 +103,8 @@ class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener 
                 try {
                     input = BufferedReader(InputStreamReader(client.getInputStream()))
                     Log.e(TAG, input.toString())
+                    val device = Device("device1", "random ip address")
+                    devicesAdapter.addItem(device)
                     out = PrintWriter(client.getOutputStream(), true)
                 } catch (e: IOException) {
                     println("in or out failed")
@@ -120,11 +126,11 @@ class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener 
 
     companion object {
         private const val TAG = "asd" //MainActivity.class.getSimpleName();
-        const val tcpPORT = 4446
+        const val tcpPORT = 4420
     }
 
-    override fun onItemClick(clickedStore: Device) {
-        TODO("Not yet implemented")
-
+    override fun onItemClick(clickedDevice: Device) {
+       val joinFragment = JoinFragment(clickedDevice)
+        joinFragment.show(supportFragmentManager, "TAG")
     }
 }

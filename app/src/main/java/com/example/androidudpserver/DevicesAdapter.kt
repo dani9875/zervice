@@ -3,6 +3,7 @@ package com.example.androidudpserver
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -23,12 +24,17 @@ class DevicesAdapter(private var itemClickListener: DeviceItemClickListener) : R
         holder.device = device
         holder.tvIPAddress.text = device.ipAddress
         holder.tvName.text = device.name
-    }
+
+        holder.buttonJoin.setOnClickListener {
+                device?.let { device -> itemClickListener?.onItemClick(device) }
+            }
+        }
+
 
     inner class DeviceViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val tvIPAddress: TextView = itemView.findViewById<TextView>(R.id.tvIPAddress)
-        val tvName: TextView = itemView.findViewById<TextView>(R.id.tvIPAddress)
-
+        val tvName: TextView = itemView.findViewById<TextView>(R.id.tvName)
+        val buttonJoin: Button = itemView.findViewById<Button>(R.id.btJoin)
         var device :Device? = null
 
         init {
