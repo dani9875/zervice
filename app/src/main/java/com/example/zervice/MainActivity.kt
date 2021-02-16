@@ -1,4 +1,4 @@
-package com.example.androidudpserver
+package com.example.zervice
 
 import android.os.Bundle
 import android.util.Log
@@ -6,6 +6,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.zervice.R
+import com.example.zervice.Device
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -13,7 +15,8 @@ import java.io.PrintWriter
 import java.net.ServerSocket
 import java.net.Socket
 
-class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener {
+
+class MainActivity : AppCompatActivity(), DevicesAdapter.DeviceItemClickListener {
 
     var tcpServer: TCPServerThread? = null
     private val devicesAdapter = DevicesAdapter(this)
@@ -103,9 +106,14 @@ class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener 
                 try {
                     input = BufferedReader(InputStreamReader(client.getInputStream()))
                     Log.e(TAG, input.toString())
-                    val device = Device("device1", "random ip address")
-                    devicesAdapter.addItem(device)
+                    Thread {
+                        runOnUiThread {
+                            val device = Device("device1", "random ip")
+                            devicesAdapter.addItem(device)
+                        }
+                    }.start()
                     out = PrintWriter(client.getOutputStream(), true)
+                    out.println("Hi Device")
                 } catch (e: IOException) {
                     println("in or out failed")
                     System.exit(-1)
@@ -126,7 +134,7 @@ class MainActivity : AppCompatActivity(),DevicesAdapter.DeviceItemClickListener 
 
     companion object {
         private const val TAG = "asd" //MainActivity.class.getSimpleName();
-        const val tcpPORT = 4420
+        const val tcpPORT = 4446
     }
 
     override fun onItemClick(clickedDevice: Device) {

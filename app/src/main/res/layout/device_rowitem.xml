@@ -12,20 +12,20 @@
     <TextView
         android:id="@+id/tvIPAddress"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="5dp"
-        android:textSize="25sp"
-        tools:text="192.68.0.1" />
+        android:textSize="20sp"
+        tools:text="192.68.012.112" />
 
     <TextView
         android:id="@+id/tvName"
-        android:layout_width="wrap_content"
+        android:layout_width="90dp"
         android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
         android:gravity="center"
-        android:textSize="20sp"
-        tools:text="Device Name"
+        android:textSize="20dp"
         android:textStyle="bold"
-        android:layout_marginLeft="5dp"/>
+        tools:text="Device Name" />
 
 
     <Button

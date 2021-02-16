@@ -1,13 +1,12 @@
-package com.example.androidudpserver
+package com.example.zervice
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import kotlinx.android.synthetic.main.join_fragment.*
 
 class JoinFragment(private var device : Device) : DialogFragment() {
 
@@ -18,11 +17,9 @@ class JoinFragment(private var device : Device) : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-       requireActivity().findViewById<Button>(R.id.buttonOk)?.setOnClickListener {
-            val toast = Toast.makeText(requireContext(),"Do whatever you want to do with "+ device.name, Toast.LENGTH_LONG)
-                    toast.setGravity(Gravity.BOTTOM,0,0)
-                    toast.show()
+        btnLogin.setOnClickListener{
+            Toast.makeText(requireContext(),"Writing credentials to outputstrem", Toast.LENGTH_LONG).show()
         }
     }
+
 }
