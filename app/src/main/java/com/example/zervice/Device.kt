@@ -6,8 +6,7 @@ import java.io.PrintWriter
 import java.net.Socket
 
 data class Device (
+    var ipAddress: String,
     var name : String,
-    var ipAddress: String
-    //var stdIn : BufferedReader,
-    //var stdOut: PrintWriter
+    var connection: Socket
 )

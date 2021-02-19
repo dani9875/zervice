@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zervice.R
 import com.example.zervice.Device
+import kotlinx.android.synthetic.main.join_fragment.*
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -27,17 +28,16 @@ class MainActivity : AppCompatActivity(), DevicesAdapter.DeviceItemClickListener
         val recView = findViewById<RecyclerView>(R.id.rvDevices)
         recView.layoutManager = LinearLayoutManager(this)
         recView.adapter = devicesAdapter
-
     }
 
     override fun onStart() {
         super.onStart()
-        val device1 = Device("device1", "192.168.0.15")
+       /* val device1 = Device("device1", "192.168.0.15")
         val device2 = Device("device2", "192.168.0.16")
         val device3 = Device("device3", "192.168.0.17")
         devicesAdapter.addItem(device1)
         devicesAdapter.addItem(device2)
-        devicesAdapter.addItem(device3)
+        devicesAdapter.addItem(device3)*/
         val thread = Thread(Runnable {
             try {
                 tcpServer = TCPServerThread()
@@ -48,8 +48,6 @@ class MainActivity : AppCompatActivity(), DevicesAdapter.DeviceItemClickListener
                 e.printStackTrace()
             }
         }).start()
-
-
     }
 
     override fun onStop() {
@@ -99,21 +97,22 @@ class MainActivity : AppCompatActivity(), DevicesAdapter.DeviceItemClickListener
         }
     }
         inner class ClientWorker /*Constructor*/(private val client: Socket) : Runnable {
+            private lateinit var line: String
+            var input: BufferedReader? = null
+            var out: PrintWriter? = null
             override fun run() {
-                var line: String
-                var input: BufferedReader? = null
-                var out: PrintWriter? = null
                 try {
+                    out = PrintWriter(client.getOutputStream(), true)
+                    out!!.println("Hi Device, please give IPAddress and Device Name")
                     input = BufferedReader(InputStreamReader(client.getInputStream()))
+                    var devicedata = input!!.readLine().split(" ")
                     Log.e(TAG, input.toString())
                     Thread {
                         runOnUiThread {
-                            val device = Device("device1", "random ip")
+                            val device = Device(devicedata[0], devicedata[1],this.client)
                             devicesAdapter.addItem(device)
                         }
                     }.start()
-                    out = PrintWriter(client.getOutputStream(), true)
-                    out.println("Hi Device")
                 } catch (e: IOException) {
                     println("in or out failed")
                     System.exit(-1)
